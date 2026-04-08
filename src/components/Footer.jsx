@@ -53,9 +53,11 @@ const Footer = () => {
             <div className='flex flex-col md:flex-row gap-2 items-center justify-between py-5'>
                 <p>© {new Date().getFullYear()} Brand. All rights reserved.</p>
                 <ul className='flex items-center gap-4'>
-                    <li><a href="#">Privacy</a> <span></span></li>
-                    <li><a href="#">Terms</a><span></span></li>
-                    <li><a href="#">Cookies</a><span></span></li>
+                    <li><a href="#">Privacy</a> </li>
+                    <li>|</li>
+                    <li><a href="#">Terms</a></li>
+                    <li>|</li>
+                    <li><a href="#">Cookies</a></li>
                 </ul>
             </div>
         </div>
