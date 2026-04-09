@@ -7,6 +7,10 @@ import Cars from './pages/Cars'
 import MyBookings from './pages/MyBookings'
 import { useState } from 'react'
 import Footer from './components/Footer'
+import Layout from './pages/owner/Layout'
+import Dashboard from './pages/owner/Dashboard'
+import AddCar from './pages/owner/AddCar'
+import ManageBooking from './pages/owner/ManageBooking'
 
 const App = () => {
 
@@ -22,7 +26,13 @@ const App = () => {
      <Route path='/car-details/:id' element={<CarDetails/>}/>
       <Route path='/cars' element={<Cars/>}/>
        <Route path='/my-bookings' element={<MyBookings/>}/>
+    <Route path='/owner' element={<Layout />}> 
+        <Route index element={<Dashboard/>}/>
 
+        <Route path='add-car' element={<AddCar/>}/>
+        <Route path='manage-cars' element={<ManageCars/>}/>
+        <Route path='manage-bookings' element={<ManageBooking/>}/>
+    </Route>
 
     </Routes>
     {!isOwnerPath && <Footer/>}
