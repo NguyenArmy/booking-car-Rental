@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { dummyUserData, ownerMenuLinks } from '../../assets/assets'
-import { useLocation } from 'react-router-dom';
+import {assets, dummyUserData, ownerMenuLinks } from '../../assets/assets'
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
 
 
     const user = dummyUserData;
-    const location = useLocation();
     const[image,setImage] = useState('')
     const updateImage= async () => {
         user.image = URL.createObjectURL(image);
