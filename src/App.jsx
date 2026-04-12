@@ -12,14 +12,20 @@ import Dashboard from './pages/owner/Dashboard'
 import AddCar from './pages/owner/AddCar'
 import ManageBooking from './pages/owner/ManageBooking'
 import ManageCar from './pages/owner/MangeCar'
+import Login from './components/Login'
 
 const App = () => {
+  const [showLogin, setShowLogin] = useState(false);
+  const isOwnerPath = useLocation().pathname.startsWith('/owner');
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log("App showLogin state:", showLogin);
+  }, [showLogin]);
 
-  const [showLogin, setShowLogin] = useState(false)
-  const isOwnerPath = useLocation().pathname.startsWith('/owner')
   return (
     <>
+      {showLogin && <Login setShowLogin={setShowLogin} />}
       {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
 
     <Routes>

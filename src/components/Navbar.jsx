@@ -31,11 +31,17 @@ const Navbar = ({setShowLogin}) => {
 
             </div>
             <div className='flex max-sm:flex-col items-start sm:items-center gap-6'>
-                <button onClick={() => navigate('/owner')} className="cursor-pointer">Dashboard</button>
-                <button onClick={() => setShowLogin(true)} className="cursor-pointer px-8 py-2 bg-primary
-                hover:bg-primary-dull transition-all text-white rounded-lg">login</button>
-
-
+                <button type="button" onClick={() => navigate('/owner')} className="cursor-pointer">Dashboard</button>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    console.log("Login button clicked - setting showLogin to true");
+                    setShowLogin(true);
+                  }} 
+                  className="cursor-pointer px-8 py-2 bg-primary hover:bg-indigo-600 transition-all text-white rounded-lg font-medium"
+                >
+                  Login
+                </button>
             </div>
 
 
