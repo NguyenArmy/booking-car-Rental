@@ -1,6 +1,6 @@
 import express  from "express";
 import { changeBookingStatus, checkAvailabilityOfCar, createBooking, getOwnerBookings, getUserBookings } from "../controlllers/bookingController.js";
-import protect from "../middleware/auth";
+import protect from "../middleware/auth.js";
 const bookingRouter = express.Router();
 
 bookingRouter.post('/check-availability', checkAvailabilityOfCar)

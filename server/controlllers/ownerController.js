@@ -199,4 +199,4 @@ const updateUserImage = async (req, res) => {
 
       
 
-export { changeRoleToOwner, addCar, getOwnerCars, toggleCarAvailability, deleteCar, getDashboardData};
+export { changeRoleToOwner, addCar, getOwnerCars, toggleCarAvailability, deleteCar, getDashboardData, updateUserImage};
