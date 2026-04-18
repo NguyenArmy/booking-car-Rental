@@ -36,13 +36,7 @@ const registerUser = async (req, res) => {
             success: true,
             message: "Register successful",
             token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                image: user.image,
-            },
+            
         });
        
         
@@ -78,13 +72,7 @@ const loginUser = async (req, res) => {
             success: true,
             message: "Login successful",
             token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                image: user.image,
-            },
+           
         });
         
     } catch (error) {
