@@ -27,8 +27,17 @@ try{
 const addCar = async (req, res) => {
     try {
         const {_id} = req.user;
-        let car = JSON.parse(req.body.carData);
+        let car;
+        try {
+            car = JSON.parse(req.body.carData);
+        } catch {
+            return res.status(400).json({ success: false, message: "Invalid car data" });
+        }
         const imageFile = req.file;
+
+        if (!imageFile) {
+            return res.status(400).json({ success: false, message: "Car image is required" });
+        }
 
         //upload image to imagekit
 
@@ -38,7 +47,7 @@ const addCar = async (req, res) => {
             fileName: imageFile.originalname,
             folder: '/car'
         })
-        console.log("Image uploaded to ImageKit:", response);
+        
 
 
         //optimization through imagekit URL transformation
@@ -57,13 +66,18 @@ const addCar = async (req, res) => {
         const image = optimizedImageUrl;
         await Car.create({...car, owner:_id, image})
         
-        res.status(201).json({ message: "Car added successfully" });
+        res.status(201).json({ success: true, message: "Car added successfully" });
 
 
 
     }catch(error){
-        console.error("Error adding car:", error);
-        res.status(500).json({ message: "Server error" });
+        console.error("Error adding car:", error.message);
+
+        if (error?.name === "ValidationError") {
+            return res.status(400).json({ success: false, message: error.message || "Validation failed" });
+        }
+
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 }
 
@@ -72,10 +86,10 @@ const getOwnerCars = async (req, res) =>{
     try {
         const {_id} = req.user;
         const cars = await Car.find({owner:_id});
-        res.status(200).json(cars);
+        res.status(200).json({ success: true, cars });
     } catch (error) {
         console.error("Error fetching owner's cars:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
         
     }
 
@@ -137,10 +151,20 @@ const getDashboardData = async (req, res) =>{
 
         const bookings = await Booking.find({owner:_id}).populate('car user').sort({createdAt: -1});
         const pendingBookings = await Booking.find({owner: _id, status: "pending"})
-         const completedBookings = await Booking.find({owner: _id, status: "comfirmed"})
+         const completedBookings = await Booking.find({ owner: _id, status: { $in: ["confirmed", "comfirmed"] } })
 
-         //calculate monthlyReveue
-         const monthlyRevenue = bookings.slice().filter(booking => booking.status === 'comfirmed').reduce((acc, booking)=> acc + booking.price, 0)
+         // Calculate confirmed revenue for current month.
+         const now = new Date();
+         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+         const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+         const monthlyRevenue = bookings
+            .filter(
+                (booking) =>
+                        (booking.status === 'confirmed' || booking.status === 'comfirmed') &&
+                    booking.createdAt >= startOfMonth &&
+                    booking.createdAt < startOfNextMonth
+            )
+            .reduce((acc, booking) => acc + (Number(booking.price) || 0), 0)
         
 
          const dashboardData ={
@@ -151,10 +175,10 @@ const getDashboardData = async (req, res) =>{
             recentBookings: bookings.slice(0,3),
             monthlyRevenue
          }
-         res.status(200).json(dashboardData);
+         res.status(200).json({ success: true, dashboardData });
     }catch(error){
         console.error("Error fetching dashboard data:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 const updateUserImage = async (req, res) => {

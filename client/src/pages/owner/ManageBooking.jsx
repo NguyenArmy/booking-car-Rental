@@ -1,29 +1,56 @@
 import { useEffect, useState } from 'react';
 import Title from '../../components/owner/Title';
-import { dummyMyBookingsData } from '../../assets/assets';
+
+import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
+import {motion} from 'motion/react'
 
 const ManageBooking = () => {
+
+  const {currency, axios, token, isOwner} = useAppContext();
   const [bookings, setBookings] = useState([]);
-  const currency = import.meta.env.VITE_CURRENCY || '$';
 
   const fetchOwnerBookings = async () => {
-    setBookings(dummyMyBookingsData);
+   try{
+    const {data} = await axios.get('/api/bookings/owner');
+    data.success ? setBookings(data.bookings) : toast.error(data.message || 'Failed to load bookings');
+
+   }catch(error){
+    toast.error(error.response?.data?.message || error.message);
+   }
+  };
+   const changeBookingStatus = async (bookingId, status) => {
+   try{
+    const {data} = await axios.post('/api/bookings/change-status', { bookingId, status });
+    if(data.success){
+      toast.success(data.message);
+      fetchOwnerBookings();
+    }else{
+      toast.error(data.message);
+    }
+
+   }catch(error){
+    toast.error(error.response?.data?.message || error.message);
+   }
   };
 
-  const handleStatusChange = (bookingId, status) => {
-    setBookings((prevBookings) =>
-      prevBookings.map((booking) =>
-        booking._id === bookingId ? { ...booking, status } : booking
-      )
-    );
-  };
-
+ 
   useEffect(() => {
-    fetchOwnerBookings();
-  }, []);
+    if (token && isOwner) {
+      fetchOwnerBookings();
+    }
+  }, [token, isOwner]);
 
   return (
-     <div className="px-4 pt-10 md:px-10 w-full">
+     <motion.div
+      initial={{y: 30, opacity: 0}}
+   
+      transition={{duration: 0.6}}
+      animate={{y: 0, opacity: 1}}
+     
+     
+     
+     className="px-4 pt-10 md:px-10 w-full">
       <Title  title='Manage Your Bookings' subTitle='View and manage all your car rental bookings. Update booking statuses and communicate with renters.'/>
       <div className='max-w-3xl w-full rounded-md overflow-hidden border border-borderColor mt-6'>
         <table className="w-full border-collapse text-left text-sm text-gray-600">
@@ -64,9 +91,9 @@ const ManageBooking = () => {
 
 <td className='p-3'>
   {booking.status === 'pending' ? (
-    <select 
+    <select
       value={booking.status} 
-      onChange={(e) => handleStatusChange(booking._id, e.target.value)}
+      onChange={(e)=> changeBookingStatus(booking._id, e.target.value)}
       className='px-2 py-1.5 mt-1 text-gray-500 border border-borderColor rounded-md outline-none'
     >
       <option value="pending">Pending</option>
@@ -95,7 +122,7 @@ const ManageBooking = () => {
 
       </div>
       
-    </div>
+    </motion.div>
   )
 }
 

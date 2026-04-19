@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { assets, dummyDashboardData } from '../../assets/assets'
 import Title from '../../components/owner/Title'
 import { useAppContext } from '../../context/AppContext';
+import toast from 'react-hot-toast';
 
 
 const Dashboard = () => {
@@ -28,6 +29,8 @@ const Dashboard = () => {
       const {data} = await axios.get('/api/owner/dashboard')
       if(data.success){
         setData(data.dashboardData)
+      }else if (data?.totalCars !== undefined) {
+        setData(data)
       }else{
         toast.error(data.message);
       }

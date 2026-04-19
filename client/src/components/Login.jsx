@@ -38,7 +38,6 @@ const Navigate = useNavigate();
   return (
     <div 
       onClick={() => {
-        console.log("Backdrop clicked, closing...");
         setShowLogin(false);
       }} 
       className='fixed top-0 bottom-0 left-0 right-0 z-[9999] flex items-center justify-center bg-black/50'

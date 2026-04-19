@@ -1,6 +1,7 @@
 import React from 'react';
 import { assets } from '../assets/assets';
 import Title from './Title';
+import { motion } from 'motion/react';
 
 const Testimonial = () => {
   // Dữ liệu mẫu cho các đánh giá
@@ -41,7 +42,11 @@ const Testimonial = () => {
       {/* Grid Layout: 1 cột trên mobile, 2 cột trên tablet (md), 3 cột trên desktop (lg) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 w-full">
         {testimonials.map((testimonial, index) => (
-          <div 
+          <motion.div
+              initial={{y: 20, opacity: 0}}
+              whileInView={{y: 0, opacity: 1}}
+              transition={{duration: 0.5, delay: index * 0.3, ease: "easeOut"}} 
+              viewport={{once: true, amount: 0.3}}
             key={index} 
             className="bg-white p-6 rounded-xl shadow-lg hover:-translate-y-1 transition-all duration-500"
           >
@@ -65,7 +70,7 @@ const Testimonial = () => {
             <p className="text-gray-500 max-w-90 mt-4 font-light">
               "{testimonial.testimonial}"
             </p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

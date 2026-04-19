@@ -67,25 +67,25 @@ const getUserBookings = async (req, res) => {
     try{
         const{_id}   = req.user;
         const bookings = await Booking.find({user:_id}).populate('car').sort({createdAt: -1});
-        res.status(200).json(bookings);
+        res.status(200).json({ success: true, bookings });
 
     }catch(error){
         console.error("Error fetching user bookings:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 const getOwnerBookings = async (req, res) => {
     try{
         if(req.user.role !== 'owner'){
-            return res.status(403).json({message: "You are not authorized to view this data"});
+            return res.status(403).json({ success: false, message: "You are not authorized to view this data" });
         }
         const {_id} = req.user;
         const bookings = await Booking.find({owner:_id}).populate('car user').select("-user.password").sort({createdAt: -1});
-        res.status(200).json(bookings);
+        res.status(200).json({ success: true, bookings });
 
     }catch(error){
         console.error("Error fetching owner bookings:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 const changeBookingStatus = async (req, res) => {
@@ -93,20 +93,22 @@ const changeBookingStatus = async (req, res) => {
         const {_id} = req.user;
         const {bookingId, status} = req.body;
         const booking = await Booking.findById(bookingId)
-        if(booking.owner.toString() !== _id.toString()){
-            return res.status(403).json({message: "You are not authorized to change the status of this booking"});
-        }
+
         if(!booking){
-            return res.status(404).json({message: "Booking not found"});
+            return res.status(404).json({ success: false, message: "Booking not found" });
+        }
+
+        if(booking.owner.toString() !== _id.toString()){
+            return res.status(403).json({ success: false, message: "You are not authorized to change the status of this booking" });
         }
 
        booking.status = status;
        await booking.save();
-       res.status(200).json({message: "Booking status updated successfully"});
+       res.status(200).json({ success: true, message: "Booking status updated successfully" });
 
     }catch(error){
         console.error("Error fetching owner bookings:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 
