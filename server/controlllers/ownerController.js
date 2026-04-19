@@ -185,12 +185,12 @@ const updateUserImage = async (req, res) => {
     //update user profile image
     const image = optimizedImageUrl;
     await User.findByIdAndUpdate(_id, { image });
-    res.status(200).json({ message: "Profile image updated successfully", image });
+    res.status(200).json({ success: true, message: "Profile image updated successfully", image });
    
     
     }catch(error){
         console.error("Error updating user image:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 
